@@ -1,0 +1,40 @@
+<html>
+<head></head>
+<body>
+  <div id="gameDiv"></div>
+  <script src="phaser.min.js"></script>
+  <script>
+  var game = new Phaser.Game(400, 400, Phaser.AUTO, 'gameDiv')
+
+var mainState = {
+      preload: function() {
+        game.load.crossOrigin = true
+        game.stage.backgroundColor = '#71c5cf'
+        game.load.image('monkey', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/23223/monkey.png')
+      },
+      create: function() {
+        var x = 100
+        var y = 200
+        game.physics.startSystem(Phaser.Physics.ARCADE)
+        this.monkey = this.game.add.sprite(x, y, 'monkey')
+        this.monkey.inputEnabled = true
+        this.monkey.anchor.setTo(0.5, 0.5)
+
+        game.physics.arcade.enable(this.monkey)
+        this.monkey.body.gravity.y = 100
+        this.monkey.body.angularVelocity = 200
+        this.monkey.scale.set(0.25, 0.25)
+
+        this.monkey.events.onInputDown.add(function(sprite, pointer) {
+          this.monkey.destroy()
+        }, this)
+      },
+      update: function() {
+      }
+    }
+
+    game.state.add('main', mainState)
+    game.state.start('main')
+  </script>
+</body>
+</html>

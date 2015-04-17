@@ -1,0 +1,64 @@
+<html>
+<head></head>
+<body>
+  <div id="gameDiv"></div>
+  <script src="phaser.min.js"></script>
+  <script>
+  var game = new Phaser.Game(400, 400, Phaser.AUTO, 'gameDiv')
+
+
+var mainState = {
+      preload: function() {
+        game.load.crossOrigin = true
+        game.stage.backgroundColor = '#71c5cf'
+        game.load.image('monkey', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/23223/monkey.png')
+        game.load.image('panda', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/23223/panda.png')
+        game.load.image('parrot', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/23223/parrot.png')
+        game.load.image('hippo', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/23223/hippo.png')
+      },
+      create: function() {
+        this.score = 0;
+        this.labelScore = game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
+        game.physics.startSystem(Phaser.Physics.ARCADE)
+
+        this.animals = [this.makeAnimal('monkey', 1), this.makeAnimal('panda', 10), this.makeAnimal('parrot', -5)]
+      },
+      update: function() {
+        for (var i = 0; i < this.animals.length; i++) {
+          var animal = this.animals[i]
+
+          if (animal.y > 450) {
+            animal.reset(Math.random() * 400, -50)
+            animal.body.angularVelocity = Math.random() * 300
+            animal.body.gravity.y = 100 + Math.random() * 150
+
+          }
+        }
+      },
+      makeAnimal: function(sprite, score) {
+        var animal = this.game.add.sprite(Math.random() * 400, -50, sprite)
+        animal.inputEnabled = true
+        animal.anchor.setTo(0.5, 0.5)
+
+        game.physics.arcade.enable(animal)
+        animal.body.angularVelocity = 200
+        animal.body.gravity.y = 100 + Math.random() * 150
+        animal.scale.set(0.25, 0.25)
+
+        animal.events.onInputDown.add(function(sprite, pointer) {
+          animal.reset(Math.random() * 400, -50)
+          animal.body.angularVelocity = Math.random() * 300
+          animal.body.gravity.y = 100 + Math.random() * 150
+          this.score += score
+          this.labelScore.text = this.score
+        }, this)
+
+        return animal
+      }
+    }
+
+    game.state.add('main', mainState)
+    game.state.start('main')
+  </script>
+</body>
+</html>

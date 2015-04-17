@@ -1,0 +1,51 @@
+<html>
+<head></head>
+<body>
+  <div id="gameDiv"></div>
+  <script src="phaser.min.js"></script>
+  <script>
+  var game = new Phaser.Game(400, 400, Phaser.AUTO, 'gameDiv')
+
+var mainState = {
+      preload: function() {
+        game.load.crossOrigin = true
+        game.stage.backgroundColor = '#71c5cf'
+        game.load.image('monkey', 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/23223/monkey.png')
+      },
+      create: function() {
+        this.score = 0;
+        this.labelScore = game.add.text(20, 20, "0", { font: "30px Arial", fill: "#ffffff" });
+        game.physics.startSystem(Phaser.Physics.ARCADE)
+
+        this.monkey = this.game.add.sprite(Math.random() * 400, -50, 'monkey')
+        this.monkey.inputEnabled = true
+        this.monkey.anchor.setTo(0.5, 0.5)
+
+        game.physics.arcade.enable(this.monkey)
+        this.monkey.body.angularVelocity = 200
+        this.monkey.body.gravity.y = 100 + Math.random() * 150
+        this.monkey.scale.set(0.25, 0.25)
+
+        this.monkey.events.onInputDown.add(function(sprite, pointer) {
+          this.monkey.reset(Math.random() * 400, -50)
+          this.monkey.body.angularVelocity = Math.random() * 300
+          this.monkey.body.gravity.y = 100 + Math.random() * 150
+          this.score += 1
+          this.labelScore.text = this.score
+        }, this)
+      },
+      update: function() {
+        if (this.monkey.y > 450) {
+          this.monkey.reset(Math.random() * 400, -50)
+          this.monkey.body.angularVelocity = Math.random() * 300
+          this.monkey.body.gravity.y = 100 + Math.random() * 150
+
+        }
+      }
+    }
+
+    game.state.add('main', mainState)
+    game.state.start('main')
+  </script>
+</body>
+</html>
